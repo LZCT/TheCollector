@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>The Collector</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="app.js"></script>
+    </head>
+
+    <body>
+        <h1>The Collector</h1>
+        <form>
+            <label for="fname">Card name:</label><br>
+            <input type="text" id="cardName" name="cardName"><br>
+            <input type="button" onclick="fetchCard()" id="searchButton" value="Search">
+        </form>
+    </body>
+
+    <h1 id="txt">You don't search anything!</h1>
+    <img src="https://tcg.pokemon.com/assets/img/global/tcg-card-back.jpg" alt="" id="preview-card">
+    <br><br>
+
+</html>
