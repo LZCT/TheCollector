@@ -66,9 +66,9 @@ const listCards = (card) => {
     
     const listOfImages =  card.map( (cardImg) => 
         `
-        <li class="card">
-        <img class="card-image" src="${cardImg}"/>
-        <li>
+        <div class="card">
+            <img class="card-image" src="${cardImg}"/>
+        </div>
         `
     ).join('');
 
