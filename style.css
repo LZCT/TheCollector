@@ -1,8 +1,13 @@
 body {
-    color: green;
-    background-color: white;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+    font-family: 'Oswald', sans-serif;
+    background-image: url("/img/card_background.webp");
     margin: 0;
+}
+
+h1{
+    font-family: 'Nothing You Could Do', cursive;
+    color: red;
 }
 
 
@@ -18,11 +23,12 @@ body {
 }
 
 .search-box{
-    padding: 10px;
-    border: 5px solid green;
+    padding: 20px;
+    border: 0px outset red;
     margin: 0 auto;
     text-align: center;
     place-items: center;
+    /*background-image: url("/img/background.jpg");*/
     
 }
 
@@ -32,10 +38,11 @@ body {
    
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 10px;
+    gap: 15px;
     margin: 0 auto;
-    background-color: transparent;
-    border: 1px solid black;
+    padding: 10px;
+    background-image: url("/img/card_background.webp");
+    border: 0px solid black;
     text-align: center;
     
     

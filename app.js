@@ -1,4 +1,5 @@
 // YOUR POKEMON TCG API KEY HERE
+//If you aren’t using an API key, you are rate limited to 1000 requests a day, and a maxium of 30 per minute.
 const POKETCGAPI_KEY = ``;
 
 const cardList = document.getElementById("cardList");
@@ -19,7 +20,6 @@ class pokemonCard {
 const fetchCard = () => {
    
     let cardName = document.getElementById('cardName').value; 
-    console.log(`CONSOLE: ${cardName}`)
 
     const url = `https://api.pokemontcg.io/v2/cards?q=name:${cardName}`;
     fetch(url, {
@@ -32,31 +32,20 @@ const fetchCard = () => {
     })
         .then( res => res.json())
         .then((cards) => {
-            console.log(cards.data)
 
             let arrayCardsImages = []
             
             cards.data.forEach( (card) => {
-                console.log(card.name);
-
-               arrayCardsImages.push(card.images.large)
-               
-                //const img = new Image(300,420);
-                //img.src = card.images.large;
-                //document.body.appendChild(img);
+                
+                arrayCardsImages.push(card.images.large)
+                
             });     
-           // document.getElementById("preview-card").src = card[0].data.images.small;
-            for(let i= 0; i < arrayCardsImages.length; i++){
-                console.log(arrayCardsImages[i]);
-            }
             
             listCards(arrayCardsImages);
 
             
         })
             
-
-    document.getElementById("txt").value = cardName;
     
 };
 
@@ -71,8 +60,6 @@ const listCards = (card) => {
         </div>
         `
     ).join('');
-
-    
 
     cardList.innerHTML = listOfImages;
 
