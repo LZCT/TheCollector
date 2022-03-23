@@ -2,18 +2,6 @@
 //If you aren’t using an API key, you are rate limited to 1000 requests a day, and a maxium of 30 per minute.
 const POKETCGAPI_KEY = ``;
 
-const cardList = document.getElementById("cardList");
-
-
-class pokemonCard {
-    constructor(name, type, img, set,){
-        this._name = name;
-        this._type = type;
-        this._img = img;
-        this._set = set;
-
-    }
-};
 
 
 
@@ -21,6 +9,7 @@ const fetchCard = () => {
    
     let cardName = document.getElementById('cardName').value; 
 
+    // Make a request with the card name
     const url = `https://api.pokemontcg.io/v2/cards?q=name:${cardName}`;
     fetch(url, {
         method: "GET",
@@ -33,37 +22,42 @@ const fetchCard = () => {
         .then( res => res.json())
         .then((cards) => {
 
-            let arrayCardsImages = []
+            let arrayCards = [];
             
             cards.data.forEach( (card) => {
-                
-                arrayCardsImages.push(card.images.large)
-                
+                //For each card resulting from the search, create an object with the id and image of the card and add it to an array
+                const pokemon = {
+                    id: card.id,
+                    img: card.images.large
+                };
+                arrayCards.push(pokemon);                
             });     
-            
-            listCards(arrayCardsImages);
-
+            //Call the function to list all cards
+            listCards(arrayCards); 
             
         })
-            
-    
 };
 
 
-
-const listCards = (card) => {
-    
-    const listOfImages =  card.map( (cardImg) => 
+//Creates a div with an id linked to the card's id and displays the card's image
+const listCards = (pokemon) => {
+    const cardList = document.getElementById("cardList");
+    const listOfImages =  pokemon.map( (card) => 
         `
-        <div class="card">
-            <img class="card-image" src="${cardImg}"/>
+        <div class="card" onclick="pokemonInfo('${card.id}')">
+            <img class="card-image" src="${card.img}" id="${card.id}"/>
         </div>
         `
     ).join('');
-
+    
     cardList.innerHTML = listOfImages;
 
 };
+
+const pokemonInfo = (id) => {
+    console.log(id);
+
+}
 
 
 
