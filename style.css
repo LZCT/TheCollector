@@ -10,6 +10,10 @@ h1{
     color: red;
 }
 
+h4{
+    margin: 0px;
+    font-weight: normal;
+}
 
 .card:hover{
     animation: bounce 0.5s linear;
@@ -41,14 +45,13 @@ h1{
     gap: 15px;
     margin: 0 auto;
     padding: 10px;
-    background-image: url("/img/card_background.webp");
-    border: 0px solid black;
+    /*background-image: url("/img/card_background.webp");*/
     text-align: center;
     
     
 }
 
-/* Class of the Li */
+/* Class of the DIVs inside the cardList DIV */
 .card{
     margin: auto;
     background-color: transparent;
@@ -60,7 +63,65 @@ h1{
 img{
     width: 300px;
     height: 420px;
-    margin: auto;
-   
+    margin: auto;   
 }
 
+/* Card pop-up */
+.pokemonPopUp{
+    position: fixed;
+    top: 0;
+    height: 100vh;
+    width: 100vw;
+    color: black;
+    background: rgba(255,255, 255, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Card Info pop-up */
+.pokemon{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 2fr;
+    gap: 15px;
+    margin: 0 auto;
+    padding: 10px;
+    text-align: center;
+}
+
+/* Card image grid config */
+.pokemonImg{
+    grid-row-start: 2;
+    grid-column-start: 2;
+
+    
+}
+/* Pokemon name grid config */
+.pokemonName{
+    grid-row-start: 1;
+    grid-column-start: 2;
+}
+
+/* Card info grid config */
+.cardInfo{
+    grid-row-start: 2;
+    margin: auto;
+    
+
+}
+
+
+/* Button to close the card pop-up*/
+#closeBtn{
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    width: 40px;
+    height: 40px;
+}
+
+mark.title{
+    background-color: transparent;
+    color: red;
+}
