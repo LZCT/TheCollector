@@ -2,23 +2,23 @@
 //If you aren’t using an API key, you are rate limited to 1000 requests a day, and a maxium of 30 per minute.
 const POKETCGAPI_KEY = ``;
 
-
+// Get some HTML Elements
 const cardList = document.getElementById("cardList");
 const cardNameInput = document.getElementById("cardNameInput");
 
 
 
-// Get the input field
 
 
-// Execute a function when the user releases a key on the keyboard
-input.addEventListener("keyup", function(event) {
-  // Number 13 is the "Enter" key on the keyboard
-  if (event.keyCode === 13) {
+
+// Function to search when press Enter
+cardNameInput.addEventListener("keydown", function(event) {
+  // "Enter" key on the keyboard
+  if (event.key === "Enter") {
     // Cancel the default action, if needed
     event.preventDefault();
     // Trigger the button element with a click
-    document.getElementById("myBtn").click();
+    document.getElementById("searchButton").click();
   }
 });
 
@@ -26,7 +26,7 @@ input.addEventListener("keyup", function(event) {
 
 const fetchCard = () => {
    
-    let cardName = document.getElementById('cardName').value; 
+    let cardName = cardNameInput.value; 
 
     // Make a request with the card name
     const url = `https://api.pokemontcg.io/v2/cards?q=name:${cardName}`;
@@ -124,7 +124,7 @@ const displayPokemon = (card) =>{
             
             
             <div class="pokemon">
-            <img id="closeBtn" src="img/close.png" onclick="closePopUp()">
+                <img id="closeBtn" src="img/close.png" onclick="closePopUp()">
 
                 <div class="pokemonImg">
                     <p><img class="card-image" src="${card.images.large}"/>
@@ -132,7 +132,6 @@ const displayPokemon = (card) =>{
 
                 <div class="pokemonName">
                     <h1>${card.supertype}</h1>
-                     
                 </div>
 
                 <div class="setInfo">
@@ -239,8 +238,6 @@ const displayPokemon = (card) =>{
                 </mark><mark class="attackDmg">${attack.damage}</mark>  
                 <p>${attack.text}
             `
-
-            
         })
 
         cardInfo.innerHTML += listOfAttacks;
@@ -284,10 +281,7 @@ const displayPokemon = (card) =>{
 
         }
         
-
         setInfo.innerHTML += listOfWeaknesses + retreatCost + listOfResistances;
-        
-
     }
     
 

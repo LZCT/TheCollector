@@ -93,8 +93,7 @@ h4{
     min-width: 100%;
     color: black;
     background: transparent;
-    /* justify-content: center;  */
-    
+    justify-content: center; 
     align-items: center;
     overflow-y: scroll;
 }
