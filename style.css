@@ -8,6 +8,11 @@ body {
 h1{
     font-family: 'Nothing You Could Do', cursive;
     color: red;
+    font-weight: bold;
+}
+
+h2{
+    text-align: center;
 }
 
 h4{
@@ -125,6 +130,7 @@ h4{
     grid-column-start: 1;
     grid-column-end: 4;
     border-bottom: 2px solid black;
+    position: relative;
     
     
 }
@@ -150,7 +156,11 @@ h4{
     width: 100%;
     max-width: 40px;
     height: auto;
+    top: 0px;
+    right: 0px;
     cursor: pointer;
+    
+    
     
     /*top: 20px;
     right: 30px;*/

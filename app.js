@@ -30,6 +30,7 @@ const fetchCard = () => {
 
     // Make a request with the card name
     const url = `https://api.pokemontcg.io/v2/cards?q=name:${cardName}`;
+    cardList.innerHTML = `<h2> Searching for <mark class="title">${cardName}</mark>...</h2>`;
     fetch(url, {
         withCredentials: true,
         headers: {
@@ -37,9 +38,21 @@ const fetchCard = () => {
             "Content-Type": "application/json"
         }
     })
-        .then( res => res.json())
-        .then((cards) => {
+        .then( res => {
+            if(res.ok)
+                return res.json();
+            
+            cardList.innerHTML = "<h2>Something went wrong! Try again later!</h2>";  
+            throw new Error('Request failed!!');
 
+        })
+        .then((cards) => {
+            //Check if the search returns any card
+            if(cards.count == 0)
+                return cardList.innerHTML = `<h2>Your search for <mark class="title">${cardName}</mark> returned no results!</h2>`;
+            
+                
+            
             let arrayCards = [];
             
             cards.data.forEach( (card) => {
@@ -124,13 +137,15 @@ const displayPokemon = (card) =>{
             
             
             <div class="pokemon">
-                <img id="closeBtn" src="img/close.png" onclick="closePopUp()">
+                
 
                 <div class="pokemonImg">
                     <p><img class="card-image" src="${card.images.large}"/>
                 </div>
 
+
                 <div class="pokemonName">
+                    <img id="closeBtn" src="img/close.png" onclick="closePopUp()">
                     <h1>${card.supertype}</h1>
                 </div>
 
