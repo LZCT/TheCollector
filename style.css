@@ -3,6 +3,7 @@ body {
     font-family: 'Oswald', sans-serif;
     background-image: url("/img/card_background.webp");
     margin: 0;
+    scroll-behavior: smooth;
 }
 
 h1{
@@ -22,7 +23,6 @@ h4{
 
 .card:hover{
     animation: bounce 0.5s linear;
-
 }
 
 @keyframes  bounce{
@@ -32,13 +32,22 @@ h4{
 }
 
 .search-box{
+    display: flex;
     padding: 20px;
     margin: auto;
     text-align: center;
-    place-items: center;
-    /*background-image: url("/img/background.jpg");*/
-    
+    justify-content:center;
+    align-items: center;
+    height: 100vh;
+    background-image: url("/img/charizardBG.jpg");
 }
+
+#searchForm{
+    background-color: rgba(0, 0, 0, 0.9);
+    padding: 100px;
+    border-radius: 25px;
+}
+
 
 #searchButton{
     cursor: pointer;
@@ -54,8 +63,6 @@ h4{
     padding: 10px;
     /*background-image: url("/img/card_background.webp");*/
     text-align: center;
-    
-    
 }
 
 /* Class of the DIVs inside the cardList DIV */
@@ -63,21 +70,21 @@ h4{
     margin: auto;
     background-color: transparent;
     color: white;
-
 }
 
 /* Card Image */
-.card-image{
+#card-image{
     width: 100%;
     max-width: 300px;
-    height: auto;
+    height: 415px;
     margin: auto; 
     cursor: pointer;
-
 }
 
-.pokemonImg .card-image{
+/* Card Image inside Popup */
+.pokemonImg #card-image{
     cursor: default;
+    height: auto;
 }
 
 /* Card Set Symbol */
@@ -111,17 +118,18 @@ h4{
     opacity: 1;
     gap: 10px;
     text-align: center;
-    border: 2px solid red;
-    background: rgba(255, 255, 255, 0.95);
-    
+    border: 2px solid white;
+    border-radius: 25px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.9);
 }
+
 
 /* Card image grid config */
 .pokemonImg{
     grid-row-start: 2;
     grid-column-start: 1;
     align-self: center;
-    
 }
 
 /* Pokemon name grid config */
@@ -129,10 +137,8 @@ h4{
     grid-row-start: 1;
     grid-column-start: 1;
     grid-column-end: 4;
-    border-bottom: 2px solid black;
+    border-bottom: 2px solid white;
     position: relative;
-    
-    
 }
 
 /* Set info grid config */
@@ -146,38 +152,34 @@ h4{
 .cardInfo{
     grid-row-start: 2;
     margin: auto;
-    
-}
-
-
-/* Button to close the card pop-up*/
-#closeBtn{
-    position: absolute;
-    width: 100%;
-    max-width: 40px;
-    height: auto;
-    top: 0px;
-    right: 0px;
-    cursor: pointer;
-    
-    
-    
-    /*top: 20px;
-    right: 30px;*/
 }
 
 /* Card Info Titles */
 mark.title{
     background-color: transparent;
-    color: red;
-    
+    color: red; 
 }
+
 /* Card Attack Damage */
 mark.attackDmg{
     background-color: transparent;
-    color: black;
+    color: white;
     vertical-align: center;
 }
 
 
 
+/* ------------------ Bootstrap  ------------------*/
+
+.card-text{
+    text-align: center;
+    margin: auto;
+}
+
+/* Button to close the card pop-up*/
+.btn-close{
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    cursor: pointer;
+}

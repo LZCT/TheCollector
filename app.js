@@ -5,6 +5,10 @@ const POKETCGAPI_KEY = ``;
 // Get some HTML Elements
 const cardList = document.getElementById("cardList");
 const cardNameInput = document.getElementById("cardNameInput");
+const searchBox = document.querySelector(".search-box");
+const searchResult = document.getElementById("searchResult");
+
+
 
 
 
@@ -25,12 +29,19 @@ cardNameInput.addEventListener("keydown", function(event) {
 
 
 const fetchCard = () => {
+
+    cardList.hidden = true;
+    searchResult.hidden = false;
+    
    
     let cardName = cardNameInput.value; 
 
     // Make a request with the card name
     const url = `https://api.pokemontcg.io/v2/cards?q=name:${cardName}`;
-    cardList.innerHTML = `<h2> Searching for <mark class="title">${cardName}</mark>...</h2>`;
+
+    searchResult.innerHTML =  `<h2> Searching for <mark class="title">${cardName}</mark>...</h2>`;
+    cardNameInput.value = "";
+
     fetch(url, {
         withCredentials: true,
         headers: {
@@ -49,9 +60,7 @@ const fetchCard = () => {
         .then((cards) => {
             //Check if the search returns any card
             if(cards.count == 0)
-                return cardList.innerHTML = `<h2>Your search for <mark class="title">${cardName}</mark> returned no results!</h2>`;
-            
-                
+                return searchResult.innerHTML = `<h2>Your search for <mark class="title">${cardName}</mark> returned no results!</h2>`;
             
             let arrayCards = [];
             
@@ -59,13 +68,18 @@ const fetchCard = () => {
                 //For each card resulting from the search, create an object with the id and image of the card and add it to an array
                 const pokemon = {
                     id: card.id,
+                    name: card.name,
+                    number: card.number,
+                    printedTotal: card.set.printedTotal,
+                    set: card.set.name,
+                    series: card.set.series,
                     img: card.images.large
                 };
                 arrayCards.push(pokemon);                
             });     
             //Call the function to list all cards
             listCards(arrayCards); 
-            
+            searchResult.hidden = true;
         })
 };
 
@@ -74,14 +88,25 @@ const fetchCard = () => {
 const listCards = (pokemon) => {
     
     const listOfImages =  pokemon.map( (card) => 
-        `
-        <div class="card" onclick="pokemonInfo('${card.id}')">
-            <img class="card-image" src="${card.img}" id="${card.id}"/>
+
+    `<div class="card text-white bg-dark mb-3 h-100" >
+        <div class="card-header bg-transparent"> <p class="card-text text-warning">${card.name}</p> (#${card.number}/${card.printedTotal})</div>
+        <img src="${card.img}" id="card-image" class="card-img-top"  onclick="pokemonInfo('${card.id}')">
+        <div class="card-body">
+            <p class="card-text text-warning">SERIES</p>
+            <p class="card-text">${card.series}</p>
+            <p class="card-text text-warning">SET</p>
+            <p class="card-text">${card.set}</p>
         </div>
-        `
+    </div>`
+
+      
     ).join('');
     
+    
     cardList.innerHTML = listOfImages;
+    cardList.hidden = false;
+    cardList.scrollIntoView({behavior: 'smooth'});
 
 };
 
@@ -98,7 +123,6 @@ const pokemonInfo = async (id) => {
     })
     .then(res => res.json())
     .then((card) => {
-        console.log(card.data);
         displayPokemon(card.data);
     })
     
@@ -107,25 +131,22 @@ const pokemonInfo = async (id) => {
 // Function to display the information about the card
 const displayPokemon = (card) =>{
     
-    //Pokemon Object
-    let Pokemon = {
+   
+    // Checking Legalities
+    let Legalities = {
         unlimited: card.legalities.unlimited,
         standard: card.legalities.standard,
-        expanded: card.legalities.expanded,
-
+        expanded: card.legalities.expanded
     }
-    
-    
 
-    // Checking Legalities
     if (typeof Pokemon.unlimited === "undefined"){
-        Pokemon.unlimited = "Illegal";
+        Legalities.unlimited = "Illegal";
     }
     if (typeof Pokemon.standard === "undefined"){
-        Pokemon.standard = "Illegal";
+        Legalities.standard = "Illegal";
     }
     if (typeof Pokemon.expanded === "undefined"){
-        Pokemon.expanded = "Illegal";
+        Legalities.expanded = "Illegal";
     }
 
  
@@ -133,19 +154,16 @@ const displayPokemon = (card) =>{
     const htmlString = 
         `<div class="pokemonPopUp">
             
-            
-            
-            
             <div class="pokemon">
-                
 
                 <div class="pokemonImg">
-                    <p><img class="card-image" src="${card.images.large}"/>
+                    <p><img id="card-image" src="${card.images.large}"/>
                 </div>
 
 
                 <div class="pokemonName">
-                    <img id="closeBtn" src="img/close.png" onclick="closePopUp()">
+                    <button type="button" class="btn-close btn-close-white" aria-label="Close" onclick="closePopUp()"></button>
+                    
                     <h1>${card.supertype}</h1>
                 </div>
 
@@ -158,9 +176,9 @@ const displayPokemon = (card) =>{
                     
                     <h2>Legalities</h2>
                     <p>
-                    <mark class="title">Standard:</mark> ${Pokemon.standard} |
-                    <mark class="title">Expanded:</mark> ${Pokemon.expanded} | 
-                    <mark class="title">Unlimited:</mark> ${Pokemon.unlimited}
+                    <mark class="title">Standard:</mark> ${Legalities.standard} |
+                    <mark class="title">Expanded:</mark> ${Legalities.expanded} | 
+                    <mark class="title">Unlimited:</mark> ${Legalities.unlimited}
                 </div>
 
                 <div class="cardInfo">
@@ -179,7 +197,7 @@ const displayPokemon = (card) =>{
     const setInfo = document.querySelector(".setInfo");
 
     
-    // Checking and Showing Card Type and HP
+    // Checking and Showing Card Type and HP, Card Name and Card Number
     if(typeof card.types != "undefined"){
         let pokemonType = card.types.map((type) => 
             `<img  src="img/types/${type}.webp"/>`
@@ -222,7 +240,7 @@ const displayPokemon = (card) =>{
         cardInfo.innerHTML += listOfRules;
     };
         
-    // Checking if a Pokemon has an ability and showing
+    // Checking if a Pokemon has an ability and showing it
     if(typeof card.abilities != "undefined"){
         let listOfAbilities = "<h2>Abilities</h2>";
 
@@ -237,7 +255,7 @@ const displayPokemon = (card) =>{
 
     };
 
-    // Checking if a card has attacks and showing
+    // Checking if a card has attacks and showing it
     if(typeof card.attacks != "undefined"){
         let listOfAttacks = "<h2>Attacks</h2>";
         
@@ -272,9 +290,7 @@ const displayPokemon = (card) =>{
             ).join("");
             
             listOfWeaknesses += weakType + "</h2>";
-
         }
-
         
         if(typeof card.retreatCost != "undefined"){
             
@@ -283,7 +299,6 @@ const displayPokemon = (card) =>{
             ).join("");
             
             retreatCost += retreatType + "</h2>";
-
         }
 
         if(typeof card.resistances != "undefined"){
@@ -293,7 +308,6 @@ const displayPokemon = (card) =>{
             );
             
             listOfResistances += resistanceType + "</h2>";
-
         }
         
         setInfo.innerHTML += listOfWeaknesses + retreatCost + listOfResistances;
