@@ -39,7 +39,7 @@ h4{
     justify-content:center;
     align-items: center;
     height: 100vh;
-    background-image: url("/img/charizardBG.jpg");
+    background-image: url("/img/card_background.webp");
 }
 
 #searchForm{
@@ -158,6 +158,7 @@ h4{
 mark.title{
     background-color: transparent;
     color: red; 
+    font-weight: bold;
 }
 
 /* Card Attack Damage */

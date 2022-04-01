@@ -37,9 +37,12 @@ const fetchCard = () => {
     let cardName = cardNameInput.value; 
 
     // Make a request with the card name
-    const url = `https://api.pokemontcg.io/v2/cards?q=name:${cardName}`;
+    const url = `https://api.pokemontcg.io/v2/cards?q=name:"${cardName}*"`;
 
-    searchResult.innerHTML =  `<h2> Searching for <mark class="title">${cardName}</mark>...</h2>`;
+    searchResult.innerHTML =  `<h2> Searching for<mark class="title">${cardName}</mark></h2>
+    <div class="spinner-border text-danger" role="status">
+    <span class="visually-hidden">Loading...</span>
+    </div>`;
     cardNameInput.value = "";
 
     fetch(url, {
@@ -53,7 +56,7 @@ const fetchCard = () => {
             if(res.ok)
                 return res.json();
             
-            cardList.innerHTML = "<h2>Something went wrong! Try again later!</h2>";  
+            searchResult.innerHTML = "<h2>Something went wrong! Try again later!</h2>";  
             throw new Error('Request failed!!');
 
         })
@@ -139,13 +142,13 @@ const displayPokemon = (card) =>{
         expanded: card.legalities.expanded
     }
 
-    if (typeof Pokemon.unlimited === "undefined"){
+    if (typeof Legalities.unlimited === "undefined"){
         Legalities.unlimited = "Illegal";
     }
-    if (typeof Pokemon.standard === "undefined"){
+    if (typeof Legalities.standard === "undefined"){
         Legalities.standard = "Illegal";
     }
-    if (typeof Pokemon.expanded === "undefined"){
+    if (typeof Legalities.expanded === "undefined"){
         Legalities.expanded = "Illegal";
     }
 
