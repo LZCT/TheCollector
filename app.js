@@ -32,13 +32,20 @@ const fetchCard = () => {
    
     let cardName = cardNameInput.value; 
 
+    //Check if the card name ends with a space and removing it
+    if(cardName.endsWith(' ')){
+        cardName = cardName.slice(0, -1);
+    }
+
     // Make a request with the card name
     const url = `https://api.pokemontcg.io/v2/cards?q=name:"${cardName}*"`;
 
-    searchResult.innerHTML =  `<h2> Searching for<mark class="title">${cardName}</mark></h2>
+    searchResult.innerHTML =  
+    `<h2> Searching for<mark class="title">${cardName}</mark></h2>
     <div class="spinner-border text-danger" role="status">
-    <span class="visually-hidden">Loading...</span>
+        <span class="visually-hidden">Loading...</span>
     </div>`;
+
     cardNameInput.value = "";
 
     fetch(url, {
@@ -135,11 +142,10 @@ const pokemonInfo = async (id) => {
     
 }
 
-// Function to display the information about the card
-const displayPokemon = (card) =>{
-    canvasCardInfo.innerHTML = "";
-   
-    // Checking Card Legalities
+//checkLegalities
+//Function to check card legalities
+const checkLegalities = (card) => {
+
     let Legalities = {
         unlimited: card.legalities.unlimited,
         standard: card.legalities.standard,
@@ -155,6 +161,150 @@ const displayPokemon = (card) =>{
     if (typeof Legalities.expanded === "undefined"){
         Legalities.expanded = "Illegal";
     }
+
+    return Legalities;
+}
+
+// checkRules
+// Function to check if a card has rules
+const checkRules = (card) => {
+     
+    if(typeof card.rules != "undefined"){
+
+        let listOfRules = card.rules.map( (rule) => 
+           `<p>&#9658;${rule}`
+       
+        ).join("<br>");
+        
+        return listOfRules;
+    };
+
+    return false;
+}
+
+ // checkAbilities
+// Function to check if a Pokemon has abilities
+const checkAbilities = (card) => {
+   
+    if(typeof card.abilities != "undefined"){
+
+        let listOfAbilities =  card.abilities.map( (ability) => 
+            `
+            <p><mark class="title">${ability.name} | ${ability.type}</mark>  
+            <p>${ability.text}
+            `
+        )
+        console.log("TESTE:" + listOfAbilities);
+        return listOfAbilities;
+
+    };
+
+    return false;
+}
+// checkAncientTrait
+// Function to check if a Pokemon has an ancient trait
+const checkAncientTrait = (card) => {
+   
+    if(typeof card.ancientTrait != "undefined"){
+
+        let ancientTrait = 
+            `<p><mark class="title">${card.ancientTrait.name} </mark>
+            <p>${card.ancientTrait.text}`;
+
+        return ancientTrait;
+    };
+
+    return false;
+}
+
+// checkAttacks
+// Function to check if a card has attacks
+const checkAttacks = (card) => {
+    
+    if(typeof card.attacks != "undefined"){
+        let listOfAttacks = "";
+        card.attacks.map( (attack) => {
+
+            let atkCost = attack.cost.map((cost) =>
+            `<img  src="img/types/${cost}.webp"/>`
+            ).join("");
+            
+            listOfAttacks +=  `<p><mark class="attackDmg">${atkCost}&emsp;</mark> 
+                <mark class="title">${attack.name}&emsp;
+                </mark><mark class="attackDmg">${attack.damage}</mark>  
+                <p>${attack.text}
+            `
+        })
+
+        return listOfAttacks;
+    };
+
+    return false;
+}
+
+// checkRetreatCost
+// Function to check the retreat cost of a pokemon
+const checkRetreatCost = (card) => {
+
+    let retreatCost = " --- ";
+
+    if(typeof card.retreatCost != "undefined"){
+            
+        let retreatType = card.retreatCost.map ((retreat) => 
+            `<img  src="img/types/${retreat}.webp"/>`
+        ).join("");
+
+        retreatCost = retreatType;
+    }
+
+    return retreatCost;
+}
+// checkResistance
+// Function to check the resistance of a pokemon
+const checkResistance = (card) => {
+
+    let listOfResistances = " --- ";
+
+    if(typeof card.resistances != "undefined"){
+            
+        let resistanceType = card.resistances.map ((resistance) => 
+            `<img  src="img/types/${resistance.type}.webp"/> ${resistance.value}`
+        );
+        
+        listOfResistances = resistanceType;
+    }
+
+    return listOfResistances;
+}
+
+// checkWeakness
+// Function to check the weakness of a pokemon
+const checkWeakness = (card) => {
+
+    let listOfWeaknesses = " --- ";
+
+    if(typeof card.weaknesses != "undefined"){
+        
+        let weakType = card.weaknesses.map ((weak) => 
+            `<img  src="img/types/${weak.type}.webp"/> ${weak.value}`
+        ).join("");
+        
+        listOfWeaknesses = weakType;
+    }
+    
+    return listOfWeaknesses;
+}
+
+
+
+// Function to display the information about the card
+const displayPokemon = (card) =>{
+    canvasCardInfo.innerHTML = "";
+   
+    
+    
+    // Checking Card Legalities
+    let Legalities = checkLegalities(card);
 
  
     // Layout Canvas
@@ -176,7 +326,9 @@ const displayPokemon = (card) =>{
                 <p><mark class="title">Illustrator:</mark> ${card.artist}
                 <p><mark class="title">Series:</mark> ${card.set.series} | <mark class="title">Set:</mark> ${card.set.name}
                 <p><img class="symbol" src="${card.set.images.symbol}"/>
-                
+            </div>
+
+            <div id="legalities">
                 <h2>Legalities</h2>
                 <p>
                 <mark class="title">Standard:</mark> ${Legalities.standard} |
@@ -184,8 +336,20 @@ const displayPokemon = (card) =>{
                 <mark class="title">Unlimited:</mark> ${Legalities.unlimited}
             </div>
 
-            <br>
+            <div id="rules"></div>
 
+            <div id="abilities"></div>
+
+            <div id="attacks"></div>
+
+            <div  id="ancientTrait"></div>
+
+            <div id="weakness"></div>
+
+            <div id="resistance"></div>
+            
+            <div id="retreatCost"></div>
+            
             <div class="cardInfo"></div>
         
         </div>
@@ -199,29 +363,40 @@ const displayPokemon = (card) =>{
     const setInfo = document.querySelector(".setInfo");
     const pokemonImage = document.querySelector(".pokemonImg");
 
+    const rulesDIV = document.getElementById("rules");
+    const abilitiesDIV = document.getElementById("abilities");
+    const attacksDIV = document.getElementById("attacks");
+    const ancientTraitDIV = document.getElementById("ancientTrait");
+    const weaknessDIV = document.getElementById("weakness");
+    const resistanceDIV = document.getElementById("resistance");
+    const retreatCostDIV = document.getElementById("retreatCost");
+
+    //FLAVOR TEXT
     // Checking if the card has a flavor text
     if(typeof card.flavorText != "undefined"){
         pokemonImage.innerHTML += "<p>" + card.flavorText;
     }
 
-    
+    // CARD TYPE, CARD NAME, HP, CARD NUMBER
     // Checking and Showing Card Type and HP, Card Name and Card Number
-    if(typeof card.types != "undefined"){
+    if(card.supertype == "Pokémon"){
         let pokemonType = card.types.map((type) => 
             `<img  src="img/types/${type}.webp"/>`
         ).join("");
         
-        let type =  `<h2>${pokemonType}&emsp;${card.name} (#${card.number}/${card.set.printedTotal})`;
+        let nameInfo =  `<h2>${pokemonType} ${card.name} (#${card.number}/${card.set.printedTotal})<h2>`;
 
         if(typeof card.hp != undefined)
-            type +=  `<br>${card.hp}hp</h2>`;
+            nameInfo +=  `<h3>${card.hp}hp</h3>`;
         
-        pokemonName.innerHTML += type;
+        pokemonName.innerHTML += nameInfo;
    
+    }else{
+        let nameInfo = `<h2>${card.name} (#${card.number}/${card.set.printedTotal})`;
+        pokemonName.innerHTML += nameInfo;
     }
     
-        
-
+    // SUBTYPE AND EVOLVES FROM
     // Checking and Showing Card Subtype and Evolves From
     if(typeof card.subtypes != "undefined"){
         
@@ -234,110 +409,32 @@ const displayPokemon = (card) =>{
         
     }
 
-
-    // Checking if a card has rules
-    if(typeof card.rules != "undefined"){
-        let listOfRules = `<h2>Rules</h2>`;
-        
-        listOfRules += card.rules.map( (rule) => 
-           `<p>&#9658;${rule}`
-       
-        ).join("<br>");
-        
-        cardInfo.innerHTML += listOfRules;
+    // CHECKING RULES
+    listOfRules = checkRules(card);
+    if(listOfRules){
+        rulesDIV.innerHTML += "<h2>Rules</h2>" + listOfRules;
     };
-        
-    // Checking if a Pokemon has an ability and showing it
-    if(typeof card.abilities != "undefined"){
-        let listOfAbilities = "<h2>Abilities</h2>";
-
-        listOfAbilities +=  card.abilities.map( (ability) => 
-            `
-            <p><mark class="title">${ability.name} | ${ability.type}</mark>  
-            <p>${ability.text}
-            `
-        )
-
-        cardInfo.innerHTML += listOfAbilities;
-
+    // CHECKING ABILITIES
+    listOfAbilities = checkAbilities(card);
+    if(listOfAbilities){
+        abilitiesDIV.innerHTML += "<h2>Abilities</h2>" + listOfAbilities;
     };
-
-    // Checking if a Pokemon has an ancient trait and showing it
-    if(typeof card.ancientTrait != "undefined"){
-
-        let AncientTrait = 
-            `<h2>Ancient Trait</h2>
-            <p><mark class="title">${card.ancientTrait.name} </mark>
-            <p>${card.ancientTrait.text}`;
-
-       
-        cardInfo.innerHTML += AncientTrait;
-
-    };
-
-    // Checking if a card has attacks and showing it
-    if(typeof card.attacks != "undefined"){
-        let listOfAttacks = "<h2>Attacks</h2>";
-        
-        card.attacks.map( (attack) => {
-
-            let atkCost = attack.cost.map((cost) =>
-            `<img  src="img/types/${cost}.webp"/>`
-            ).join("");
-            
-        
-            listOfAttacks +=  `<p><mark class="attackDmg">${atkCost}&emsp;</mark> 
-                <mark class="title">${attack.name}&emsp;
-                </mark><mark class="attackDmg">${attack.damage}</mark>  
-                <p>${attack.text}
-            `
-        })
-
-        cardInfo.innerHTML += listOfAttacks;
-    };
-
-    //Checking weaknesses, retreat cost, resistance
-    if(card.supertype == "Pokémon"){
-
-        let listOfWeaknesses = "<h2>Weakness</h2>";
-        let retreatCost = "<h2>Retreat Cost</h2>";
-        let listOfResistances = "<h2>Resistances</h2>";
-
-        if(typeof card.weaknesses != "undefined"){
-            
-            let weakType = card.weaknesses.map ((weak) => 
-                `<img  src="img/types/${weak.type}.webp"/> ${weak.value}`
-            ).join("");
-            
-            listOfWeaknesses += weakType;
-        }else{
-            listOfWeaknesses += " --- ";
-        }
-        
-        if(typeof card.retreatCost != "undefined"){
-            
-            let retreatType = card.retreatCost.map ((retreat) => 
-                `<img  src="img/types/${retreat}.webp"/>`
-            ).join("");
-            
-            retreatCost += retreatType;
-        }else{
-            retreatCost += " --- ";
-        }
-
-        if(typeof card.resistances != "undefined"){
-            
-            let resistanceType = card.resistances.map ((resistance) => 
-                `<img  src="img/types/${resistance.type}.webp"/> ${resistance.value}`
-            );
-            
-            listOfResistances += resistanceType;
-        }else{
-            listOfResistances += " --- ";
-        }
-        
-        cardInfo.innerHTML += listOfWeaknesses + retreatCost + listOfResistances;
+    // CHECKING ANCIENT TRAIT
+    ancientTrait = checkAncientTrait(card);
+    if(ancientTrait){
+        ancientTraitDIV.innerHTML += "<h2>Ancient Trait</h2>" + ancientTrait;
     }
+    // CHECKING ATTACKS
+    attacks = checkAttacks(card);
+    if(attacks){
+        attacksDIV.innerHTML += "<h2>Attacks</h2>" + attacks;
+    }
+    // CHECKING WEAKNESS, RESISTANCE, RETREAT COST
+    if(card.supertype == "Pokémon"){
+        weaknessDIV.innerHTML += "<h2>Weakness</h2>" + checkWeakness(card);
+        resistanceDIV.innerHTML += "<h2>Resistances</h2>" + checkResistance(card);
+        retreatCostDIV.innerHTML += "<h2>Retreat Cost</h2>" + checkRetreatCost(card);
+    }  
     
 
     
