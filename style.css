@@ -39,7 +39,7 @@ h4{
     justify-content:center;
     align-items: center;
     height: 100vh;
-    background-image: url("/img/card_background.webp");
+    background-image: url("/img/charizardBG.jpg");
 }
 
 #searchForm{
@@ -125,9 +125,7 @@ h4{
 }*/
 
 #canvasCardInfo{
-    
     overflow-y: auto;
-    
 }
 
 
@@ -163,14 +161,12 @@ h4{
     grid-row-start: 2;
     grid-column-start: 3;
     margin: auto 0;    
-    border: 2px solid black;
 }
 
 /* Card info grid config */
 .cardInfo{
     grid-row-start: 2;
     margin: auto;
-    border: 2px solid black;
 }
 
 /* Card Info Titles */
